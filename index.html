@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SymphonyGen: 3D Hierarchical Orchestral Generation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #fafafa; color: #333; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .hero { background-color: #fff; border-bottom: 1px solid #eee; }
+        .breadcrumb-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; font-weight: 500; }
+        .breadcrumb-container a { color: #3273dc; text-decoration: none; }
+        .breadcrumb-container a:hover { text-decoration: underline; }
+        .video-box { background: #000; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .disclaimer { font-size: 0.85rem; color: #666; font-style: italic; margin-top: 10px; }
+        .abstract-box { background: #fdfdfd; padding: 30px; border-radius: 8px; border: 1px solid #eee; }
+        .author-block { margin-bottom: 2rem; }
+        .corresponding { font-size: 0.9rem; color: #555; }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Title -->
+    <section class="hero section">
+        <div class="container has-text-centered">
+            <h1 class="title is-3">SymphonyGen</h1>
+            <h2 class="subtitle is-4">3D Hierarchical Orchestral Generation with Controllable Harmony Skeleton</h2>
+
+            <div class="author-block">
+                <p class="is-size-6">
+                    Xuzheng He<sup>1</sup>, Nan Nan<sup>2,†</sup>, Zhilin Wang<sup>3</sup>, Ziyue Kang<sup>2</sup>,
+                    Zhuoru Mo<sup>4</sup>, Ao Li<sup>2</sup>,
+                    Yu Pan<sup>1</sup>, Xiaobing Li<sup>1</sup>,
+                    Feng Yu<sup>1</sup>, Xiaohong Guan<sup>1,2,†</sup>
+                </p>
+                <p class="is-size-7 mt-2">
+                    <sup>1</sup>Central Conservatory of Music | <sup>2</sup>Xi'an Jiaotong University | <sup>3</sup>USTC | <sup>4</sup>Shenzhen University
+                </p>
+                <p class="corresponding is-size-7 mt-1"><sup>†</sup> Corresponding authors</p>
+            </div>
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-container">
+                <a href="https://arxiv.org/abs/YOUR_ID_HERE"><i class="far fa-file-pdf"></i> arXiv</a>
+                <span><i class="fab fa-github"></i> Code (To be uploaded)</span>
+                <span><i class="fas fa-database"></i> Hugging Face (To be uploaded)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract -->
+    <section class="section" style="padding-top: 10px;">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-three-quarters">
+                    <div class="abstract-box">
+                        <h3 class="title is-5 mb-3">Abstract</h3>
+                        <p class="content is-size-6" style="text-align: justify; line-height: 1.5;">
+                            Generating symphonic music requires simultaneously managing high-level structural form and dense, multi-track orchestration. Existing symbolic models often struggle with a "complexity-control imbalance", in which scaling bottlenecks limit long-term granular steerability. We present SymphonyGen, a 3D hierarchical framework for contemporary cinematic orchestration. SymphonyGen employs a cascading decoder architecture that decomposes the Bar, Track, and Event axes, improving computational efficiency and scalability over conventional 1D or 2D models. We introduce "short-score" conditioning via a beat-quantized multi-voice harmony skeleton, enabling outline control while preserving textural diversity. The model is further refined using Group Relative Policy Optimization (GRPO) with a cross-modal audio-perceptual reward, aligning symbolic output with modern acoustic expectations. Additionally, we implement a dissonance-averse sampling algorithm to suppress unintended tonal clashes during inference. Objective evaluations show that both reinforcement learning and dissonance-averse sampling effectively enhance harmonic cleanliness while maintaining melodic expression. Subjective evaluations demonstrate that SymphonyGen outperforms baselines in musicality and preference for orchestral music generation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-half has-text-centered">
+                    <h3 class="title is-4 mb-4">Best Examples Demo</h3>
+                    <div class="video-box">
+                        <video width="100%" height="auto" controls>
+                            <source src="best_examples_demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <p class="disclaimer">📢 You are listening to cherry-picked examples of our model.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
