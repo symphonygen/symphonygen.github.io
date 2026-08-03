@@ -42,8 +42,8 @@
             <!-- Breadcrumbs -->
             <div class="breadcrumb-container">
                 <a href="https://arxiv.org/abs/2604.25498"><i class="far fa-file-pdf"></i> arXiv</a>
-                <span><i class="fab fa-github"></i> Code (To be uploaded)</span>
-                <span><i class="fas fa-database"></i> Hugging Face (To be uploaded)</span>
+                <a href="https://github.com/symphonygen/symphonygen"><i class="fab fa-github"></i> Code</a>
+                <a href="https://huggingface.co/SymphonyGen/SymphonyGen">🤗 Models</a>
             </div>
         </div>
     </section>
@@ -55,8 +55,8 @@
                 <div class="column is-three-quarters">
                     <div class="abstract-box">
                         <h3 class="title is-5 mb-3">Abstract</h3>
-                        <p class="content is-size-6" style="text-align: justify; line-height: 1.5;">
-                            Generating symphonic music requires simultaneously managing high-level structural form and dense, multi-track orchestration. Existing symbolic models often struggle with a "complexity-control imbalance", in which scaling bottlenecks limit long-term granular steerability. We present SymphonyGen, a 3D hierarchical framework for contemporary cinematic orchestration. SymphonyGen employs a cascading decoder architecture that decomposes the Bar, Track, and Event axes, improving computational efficiency and scalability over conventional 1D or 2D models. We introduce "short-score" conditioning via a beat-quantized multi-voice harmony skeleton, enabling outline control while preserving textural diversity. The model is further refined using Group Relative Policy Optimization (GRPO) with a cross-modal audio-perceptual reward, aligning symbolic output with modern acoustic expectations. Additionally, we implement a dissonance-averse sampling algorithm to suppress unintended tonal clashes during inference. Objective evaluations show that both reinforcement learning and dissonance-averse sampling effectively enhance harmonic cleanliness while maintaining melodic expression. Subjective evaluations demonstrate that SymphonyGen outperforms baselines in musicality and preference for orchestral music generation.
+                        <p class="content is-size-6" style="line-height: 1.5;">
+                            Generating symphonic music requires simultaneously managing high-level structural form and dense, multi-track orchestration, yet existing symbolic models often struggle with a "complexity-control imbalance" between scalability and steerability. We present SymphonyGen, a 3D hierarchical framework for contemporary orchestral generation, whose cascading decoders decompose the bar, track, and event axes, keeping decoding memory far below flat token streams and enabling conditioning at every structural level. A beat-quantized multi-pitch harmony skeleton, which may be user-written, analyzed, or model-generated, provides "short-score" conditioning, enabling outline control while producing orchestral textures. The model is refined with reinforcement learning against a cross-modal acoustic reward from CLaMP 3 audio embeddings, and a dissonance-averse sampling algorithm suppresses unintended tonal clashes during inference. Objective evaluations show that both post-training mechanisms reduce dissonance while maintaining independent melodic metrics, and in subjective tests SymphonyGen is rated above baseline systems in quality and preference, significantly so among general listeners.
                         </p>
                     </div>
                 </div>
@@ -126,6 +126,47 @@
                 </div>
             </section>
 
+            <section class="mt-6">
+                <h2 class="title is-4 section-title">Baseline Systems</h2>
+                <div class="notification is-light">
+                    <p>The baseline excerpts rated in the subjective listening tests, shown here under their original (de-anonymized) names: excerpts from the <strong>SymphonyNet Dataset</strong>, official demo samples of <strong>SymphonyNet</strong> and <strong>METEOR</strong>, and samples from <strong>NotaGen-X</strong> (label: Romantic, Brahms/Dvořák, Orchestral).</p>
+                </div>
+
+                <h3 class="title is-5 mt-5">
+                    <span class="icon has-text-success"><i class="fas fa-database"></i></span>
+                    Dataset Excerpts
+                </h3>
+                <div class="columns is-multiline" id="baseline-dataset-grid">
+                </div>
+
+                <hr class="my-6">
+
+                <h3 class="title is-5">
+                    <span class="icon has-text-danger"><i class="fas fa-music"></i></span>
+                    SymphonyNet
+                </h3>
+                <div class="columns is-multiline" id="baseline-symphonynet-grid">
+                </div>
+
+                <hr class="my-6">
+
+                <h3 class="title is-5">
+                    <span class="icon has-text-link"><i class="fas fa-file-alt"></i></span>
+                    NotaGen
+                </h3>
+                <div class="columns is-multiline" id="baseline-notagen-grid">
+                </div>
+
+                <hr class="my-6">
+
+                <h3 class="title is-5">
+                    <span class="icon has-text-primary"><i class="fas fa-guitar"></i></span>
+                    METEOR
+                </h3>
+                <div class="columns is-multiline" id="baseline-meteor-grid">
+                </div>
+            </section>
+
         </div>
     </main>
 
@@ -174,6 +215,91 @@
         for (let i = 0; i <= 9; i++) {
             arrangementList.innerHTML += createArrangementRow(i);
         }
+
+        // Helper to create Baseline Cards
+        function createBaselineCard(label, src) {
+            return `
+                <div class="column is-3">
+                    <div class="audio-card">
+                        <p>${label}</p>
+                        <audio controls preload="none" src="${src}"></audio>
+                    </div>
+                </div>`;
+        }
+
+        function populateBaselineGrid(gridId, dir, files, labelFn) {
+            const grid = document.getElementById(gridId);
+            for (const file of files) {
+                grid.innerHTML += createBaselineCard(labelFn(file), `baselines/${dir}/${file}`);
+            }
+        }
+
+        // Dataset excerpts, e.g. "contemporary_4820539_win_144_176.mp3" -> "Contemporary 4820539 (bars 144-176)"
+        populateBaselineGrid('baseline-dataset-grid', 'dataset', [
+            'contemporary_903771_win_16_48.mp3',
+            'contemporary_4820539_win_144_176.mp3',
+            'contemporary_5996105_win_16_48.mp3',
+            'contemporary_6136969_win_48_80.mp3',
+        ], file => {
+            const m = file.match(/^contemporary_(\d+)_win_(\d+)_(\d+)\.mp3$/);
+            return `Contemporary ${m[1]} (bars ${m[2]}–${m[3]})`;
+        });
+
+        // SymphonyNet demo samples: "chordN" = chord-conditioned, "scratchN" = unconditioned
+        populateBaselineGrid('baseline-symphonynet-grid', 'SymphonyNet', [
+            'chord2.mp3', 'chord3.mp3', 'chord4.mp3',
+            'scratch1.mp3', 'scratch2.mp3', 'scratch3.mp3', 'scratch4.mp3',
+        ], file => {
+            const m = file.match(/^(chord|scratch)(\d+)\.mp3$/);
+            return m[1] === 'chord' ? `Chord-conditioned ${m[2]}` : `From scratch ${m[2]}`;
+        });
+
+        // NotaGen-X samples, e.g. "Romantic_Brahms_Johannes_sample_10_win_64_96.mp3" -> "Brahms sample 10 (bars 64-96)"
+        populateBaselineGrid('baseline-notagen-grid', 'NotaGen', [
+            'Romantic_Brahms_Johannes_sample_1_win_16_48.mp3',
+            'Romantic_Brahms_Johannes_sample_3_win_32_64.mp3',
+            'Romantic_Brahms_Johannes_sample_5_win_0_32.mp3',
+            'Romantic_Brahms_Johannes_sample_6_win_16_48.mp3',
+            'Romantic_Brahms_Johannes_sample_8_win_16_48.mp3',
+            'Romantic_Brahms_Johannes_sample_10_win_64_96.mp3',
+            'Romantic_Brahms_Johannes_sample_13_win_48_80.mp3',
+            'Romantic_Brahms_Johannes_sample_14_win_32_64.mp3',
+            'Romantic_Brahms_Johannes_sample_15_win_80_112.mp3',
+            'Romantic_Brahms_Johannes_sample_16_win_144_176.mp3',
+            'Romantic_Brahms_Johannes_sample_17_win_32_64.mp3',
+            'Romantic_Brahms_Johannes_sample_18_win_32_64.mp3',
+            'Romantic_Brahms_Johannes_sample_19_win_48_80.mp3',
+            'Romantic_Brahms_Johannes_sample_20_win_32_64.mp3',
+            'Romantic_Dvorak_Antonin_sample_1_win_32_64.mp3',
+            'Romantic_Dvorak_Antonin_sample_3_win_16_48.mp3',
+            'Romantic_Dvorak_Antonin_sample_4_win_16_48.mp3',
+            'Romantic_Dvorak_Antonin_sample_5_win_32_64.mp3',
+            'Romantic_Dvorak_Antonin_sample_6_win_32_64.mp3',
+            'Romantic_Dvorak_Antonin_sample_7_win_96_128.mp3',
+            'Romantic_Dvorak_Antonin_sample_10_win_112_144.mp3',
+            'Romantic_Dvorak_Antonin_sample_12_win_32_64.mp3',
+            'Romantic_Dvorak_Antonin_sample_13_win_112_144.mp3',
+            'Romantic_Dvorak_Antonin_sample_14_win_16_48.mp3',
+            'Romantic_Dvorak_Antonin_sample_15_win_48_80.mp3',
+            'Romantic_Dvorak_Antonin_sample_16_win_16_48.mp3',
+            'Romantic_Dvorak_Antonin_sample_18_win_144_176.mp3',
+            'Romantic_Dvorak_Antonin_sample_19_win_80_112.mp3',
+            'Romantic_Dvorak_Antonin_sample_20_win_48_80.mp3',
+        ], file => {
+            const m = file.match(/^Romantic_(\w+?)_\w+?_sample_(\d+)_win_(\d+)_(\d+)\.mp3$/);
+            const composer = m[1] === 'Dvorak' ? 'Dvořák' : m[1];
+            return `${composer} sample ${m[2]} (bars ${m[3]}–${m[4]})`;
+        });
+
+        // METEOR demo samples: two orchestrated from dataset excerpts, one from a lead sheet
+        populateBaselineGrid('baseline-meteor-grid', 'METEOR', [
+            'example1_orch_PR0.mp3',
+            'example2_orch_PR0.mp3',
+            'leadsheet2_orch.mp3',
+        ], file => {
+            const m = file.match(/^example(\d+)_orch/);
+            return m ? `Dataset excerpt ${m[1]} (orchestrated)` : 'Lead sheet (orchestrated)';
+        });
     </script>
 
     <footer class="footer mt-6">
